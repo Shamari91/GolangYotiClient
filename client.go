@@ -1,16 +1,16 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
-	"bytes"
-	"fmt"
 )
 
 const (
-	encryptURI = "http://localhost:8080/encrypt"
-	decryptURI = "http://localhost:8080/decrypt"
+	encryptURI      = "http://localhost:8080/encrypt"
+	decryptURI      = "http://localhost:8080/decrypt"
 	applicationType = "application/json"
 )
 
@@ -25,8 +25,8 @@ type encryptionResponse struct {
 }
 
 type EncrypterClient struct {
-  id string
-  payload []byte  
+	id      string
+	payload []byte
 }
 
 func (e EncrypterClient) Store(id, payload []byte) (aesKey []byte, err error) {
@@ -100,20 +100,19 @@ func (e EncrypterClient) Retrieve(id, aesKey []byte) (payload []byte, err error)
 	return []byte(response.Data), nil
 }
 
-
-func main(){
+func main() {
 	var clinet Client
 	clinet = EncrypterClient{}
-	
+
 	aesKey, err := clinet.Store([]byte("1"), []byte("Yoti"))
 	if err != nil {
 		fmt.Printf("Error while trying to encrypt: %v", err)
 	}
 
 	plainText, err := clinet.Retrieve([]byte("1"), aesKey)
-    if err != nil {
+	if err != nil {
 		fmt.Printf("Error while trying to decrypt: %v", err)
 	}
-	
+
 	fmt.Printf("Response ... Plain Text: %v", string(plainText))
 }
